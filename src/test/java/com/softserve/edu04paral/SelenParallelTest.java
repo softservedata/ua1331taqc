@@ -47,7 +47,7 @@ public class SelenParallelTest {
     @BeforeEach
     public void setupThis() throws InterruptedException {
         WebDriver driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(IMPLICITLY_WAIT_SECONDS));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(IMPLICITLY_WAIT_SECONDS)); // 0 default
         //driver.manage().window().maximize();
         drivers.put(Thread.currentThread().getId(), driver);
         //
