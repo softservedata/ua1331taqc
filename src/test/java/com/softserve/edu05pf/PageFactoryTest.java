@@ -39,7 +39,6 @@ public class PageFactoryTest {
         }
     }
 
-
     @BeforeAll
     public static void setup() {
         WebDriverManager.chromedriver().setup();
