@@ -22,10 +22,10 @@ public class TestSamples3 {
     @FindBy(css = ".lang-option")
     private WebElement languageSwitcher;
 
-    @FindBy(xpath = "/html/body/app-root/app-main/div/app-header/header/div[2]/div/div/div/ul/ul/li[2]/span")
+    @FindBy(xpath = "//ul/ul/li[1]/span")
     private WebElement enOption;
 
-    @FindBy(xpath = "/html/body/app-root/app-main/div/app-header/header/div[2]/div/div/div/ul/ul/li[2]/span")
+    @FindBy(xpath = "//ul/ul/li[2]/span")
     private WebElement uaOption;
 
     @FindBy(css = ".header_sign-in-link")
