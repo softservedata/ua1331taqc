@@ -8,11 +8,9 @@ public abstract class HeaderPart {
 
     protected WebDriver driver;
     //
-    private WebElement ecoNews;
-    private WebElement events;
-    private WebElement aboutus;
-    private WebElement ubsCourier;
-    private WebElement signin;
+    private WebElement languageDropdown;
+    //private WebElement english;
+    //private WebElement ukrainian;
 
     public HeaderPart(WebDriver driver) {
         this.driver = driver;
@@ -20,93 +18,66 @@ public abstract class HeaderPart {
     }
 
     private void initElements() {
-        ecoNews = driver.findElement(By.cssSelector("div.header_navigation-menu a[href*='/news']"));
-        events = driver.findElement(By.cssSelector("div.header_navigation-menu a[href*='/events']"));
-        aboutus = driver.findElement(By.cssSelector("div.header_navigation-menu a[href*='/about']"));
-        ubsCourier = driver.findElement(By.cssSelector("div.header_navigation-menu a[href*='/ubs']"));
-        //signin = driver.findElement(By.cssSelector("div.header_navigation-menu img[src*='/user.svg']"));
+        languageDropdown = driver.findElement(By.cssSelector("ul.header_lang-switcher-wrp span[aria-hidden]"));
+        //english = driver.findElement(By.xpath("//ul[contains(@class, 'header_lang-switcher-wrp')]//span[text()='En']"));
+        //ukrainian = driver.findElement(By.xpath("//ul[contains(@class, 'header_lang-switcher-wrp')]//span[text()='Ua']"));
     }
 
     // PageObject Atomic Operation
 
-    // ecoNews
-    public WebElement getEcoNews() {
-        return ecoNews; // Classic Page Object
-        //return driver.findElement(By.cssSelector("div.header_navigation-menu a[href*='/news']")); // Lazy initialization
+    // languageDropdown
+    public WebElement getLanguageDropdown() {
+        return languageDropdown; // Classic Page Object
     }
 
-    public String  getEcoNewsText() {
-        return getEcoNews().getText().trim();
+    public String getLanguageDropdownText() {
+        return getLanguageDropdown().getText().trim();
     }
 
-    public void  clickEcoNews() {
-        getEcoNews().click();
+    public void clickLanguageDropdown() {
+        getLanguageDropdown().click();
     }
 
-    // events
-    public WebElement getEvents() {
-        return ecoNews; // Classic Page Object
-        //return driver.findElement(By.cssSelector("div.header_navigation-menu a[href*='/news']")); // Lazy initialization
+    // english
+    public WebElement getEnglish() {
+        getLanguageDropdown();
+        return driver.findElement(By.xpath("//ul[contains(@class, 'header_lang-switcher-wrp')]//span[text()='En']"));
+        //return english; // Classic Page Object
     }
 
-    public String getEventsText() {
-        return getEvents().getText().trim();
+    public String getEnglishText() {
+        return getEnglish().getText().trim();
     }
 
-    public void clickEvents() {
-        getEvents().click();
+    public void clickEnglish() {
+        getEnglish().click();
     }
 
-    // aboutus
-    public WebElement getAboutus() {
-        return ecoNews; // Classic Page Object
-        //return driver.findElement(By.cssSelector("div.header_navigation-menu a[href*='/news']")); // Lazy initialization
+    // ukrainian
+    public WebElement getUkrainian() {
+        getLanguageDropdown();
+        return driver.findElement(By.xpath("//ul[contains(@class, 'header_lang-switcher-wrp')]//span[text()='Ua']"));
+        //return ukrainian; // Classic Page Object
     }
 
-    public String getAboutusText() {
-        return getAboutus().getText().trim();
+    public String getUkrainianText() {
+        return getUkrainian().getText().trim();
     }
 
-    public void clickAboutus() {
-        getAboutus().click();
+    public void clickUkrainian() {
+        getUkrainian().click();
     }
-
-    // ubsCourier
-    public WebElement getUbsCourier() {
-        return ecoNews; // Classic Page Object
-        //return driver.findElement(By.cssSelector("div.header_navigation-menu a[href*='/news']")); // Lazy initialization
-    }
-
-    public String getUbsCourierText() {
-        return getUbsCourier().getText().trim();
-    }
-
-    public void clickUbsCourier() {
-        getUbsCourier().click();
-    }
-
-    // signin
-    public WebElement getSignin() {
-        signin = driver.findElement(By.cssSelector("div.header_navigation-menu img[src*='/user.svg']"));
-        return signin;
-    }
-
-    public void clickSignin() {
-        getSignin().click();
-    }
-
 
     // PageObject Functional Operation
+//    protected void chooseEnglishLanguage() {
+//        clickLanguageDropdown();
+//        clickEnglish();
+//    }
+
+//    protected void chooseUkrainianLanguage() {
+//        clickLanguageDropdown();
+//        clickUkrainian();
+//    }
 
     // PageObject Business Operation
-
-    public AboutusPage gotoAboutusPage() {
-        clickAboutus();
-        return new AboutusPage(driver);
-    }
-
-    public HomeUbsPage gotoHomeUbsPage() {
-        clickUbsCourier();
-        return new HomeUbsPage(driver);
-    }
 }

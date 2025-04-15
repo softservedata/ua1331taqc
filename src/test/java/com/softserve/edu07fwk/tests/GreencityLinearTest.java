@@ -1,9 +1,15 @@
 package com.softserve.edu07fwk.tests;
 
+import com.softserve.edu07fwk.pages.AboutusPage;
+import com.softserve.edu07fwk.pages.HomeUbsPage;
+import com.softserve.edu07fwk.pages.SigninPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -23,8 +29,8 @@ import java.util.Date;
 @ExtendWith(RunnerExtension.class)
 public class GreencityLinearTest {
     //
-    //private final String BASE_URL = "https://www.greencity.cx.ua/#/ubs";
-    private final String BASE_URL = "http://greencity.eastus.cloudapp.azure.com/#/ubs";
+    private final String BASE_URL = "https://www.greencity.cx.ua/#/ubs";
+    //private final String BASE_URL = "http://greencity.eastus.cloudapp.azure.com/#/ubs";
     private final Long IMPLICITLY_WAIT_SECONDS = 10L;
     private final Long IMPLICITLY_WAIT_ONE_SECONDS = 1L;
     private final Long ONE_SECOND_DELAY = 1000L;
@@ -166,6 +172,18 @@ public class GreencityLinearTest {
     }
 
     @Test
+    public void checkAboutPages() throws InterruptedException {
+        System.out.println("Test start");
+        //
+        AboutusPage aboutusPage = new HomeUbsPage(driver)
+                .gotoHomeGreencityPage()
+                .chooseEnglish()
+                .gotoAboutusPage();
+        //
+        Assertions.assertEquals(AboutusPage.ABOUT_US, aboutusPage.getSectionHeaderText());
+    }
+
+    @Test
     public void checkSignin() throws InterruptedException {
         System.out.println("Test start");
         //
@@ -189,6 +207,21 @@ public class GreencityLinearTest {
         //driver.findElement(By.cssSelector("button[type='submit']")).click();
         presentationSleep(2); // For Presentation ONLY
         //
+    }
+
+    @ParameterizedTest
+    @CsvSource({"cicada32073@mailshan.com, Qwerty_1"})
+    public void checkSigninPages(String email, String password) {
+        System.out.println("Test start");
+        //
+        SigninPage signinPage = new HomeUbsPage(driver)
+                .gotoHomeGreencityPage()
+                .chooseEnglish()
+                .gotoSigninPage()
+                .login(email, password);
+        //
+        Assertions.assertEquals(email, signinPage.getEmailFieldText());
+        Assertions.assertEquals(password, signinPage.getPasswordFieldText());
         //
     }
 
