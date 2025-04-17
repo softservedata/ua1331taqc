@@ -1,5 +1,6 @@
 package com.softserve.edu07fwk.pages;
 
+import com.softserve.edu07fwk.data.User;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -107,9 +108,12 @@ public class SigninPage {
     // PageObject Business Operation
 
     //public HomeGreencityPage login(String email, String password) {
-    public SigninPage login(String email, String password) {
-        typeEmail(email);
-        typePassword(password);
+    //public SigninPage login(String email, String password) {
+    public SigninPage login(User user) {
+        //typeEmail(email);
+        typeEmail(user.getEmail());
+        //typePassword(password);
+        typePassword(user.getPassword());
         activateSigninButton();
         try {
             Thread.sleep(4000);

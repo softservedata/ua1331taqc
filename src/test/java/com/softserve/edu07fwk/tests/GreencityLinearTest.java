@@ -1,5 +1,7 @@
 package com.softserve.edu07fwk.tests;
 
+import com.softserve.edu07fwk.data.User;
+import com.softserve.edu07fwk.data.UserRepository;
 import com.softserve.edu07fwk.pages.AboutusPage;
 import com.softserve.edu07fwk.pages.HomeUbsPage;
 import com.softserve.edu07fwk.pages.SigninPage;
@@ -219,7 +221,9 @@ public class GreencityLinearTest {
                 .gotoHomeGreencityPage()
                 .chooseEnglish()
                 .gotoSigninPage()
-                .login(email, password);
+                .login(new User(email, password, "Qwerty1"));
+                //.login(UserRepository.getDefault());
+                //.login(email, password);
         //
         Assertions.assertEquals(email, signinPage.getEmailFieldText());
         Assertions.assertEquals(password, signinPage.getPasswordFieldText());
