@@ -1,6 +1,7 @@
 package com.softserve.edu07fwk.tests;
 
 import com.softserve.edu07fwk.pages.HomeUbsPage;
+import com.softserve.utils.PropertiesUtil;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
@@ -10,6 +11,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +37,7 @@ public abstract class TestRunner {
     private final String TIME_TEMPLATE = "yyyy-MM-dd_HH-mm-ss-S";
     private final String LOCALSTORAGE_REMOVE = "window.localStorage.removeItem('%s');";
     private final String REMOVE_ATTRIBUTE = "document.querySelector('%s').removeAttribute('disabled')";
+    private PropertiesUtil propertiesUtil;
     protected WebDriver driver;
     protected JavascriptExecutor javascriptExecutor;
     protected static boolean isTestSuccessful = false;
@@ -55,6 +58,7 @@ public abstract class TestRunner {
         }
     }
 
+    // Add test name
     private void takeScreenShot() {
         //logger.debug("Start takeScreenShot()");
         //
@@ -72,6 +76,7 @@ public abstract class TestRunner {
         }
     }
 
+    // TODO Get Actual Page
     private void takePageSource() {
         //logger.debug("Start takePageSource()");
         //
@@ -89,13 +94,19 @@ public abstract class TestRunner {
 
     @BeforeAll
     public void setup() {
-        //System.setProperty("webdriver.chrome.driver", "./lib/chromedriver.exe");
-        WebDriverManager.chromedriver().setup();
-        //
-        //ChromeOptions options = new ChromeOptions();
-        //options.addArguments("--remote-allow-origins=*");
-        //driver = new ChromeDriver(options);
-        driver = new ChromeDriver();
+        readPreperties();
+        if (propertiesUtil.readBrowserName().contains("firefox")) {
+            WebDriverManager.firefoxdriver().setup();
+            driver = new FirefoxDriver();
+        } else {
+            //System.setProperty("webdriver.chrome.driver", "./lib/chromedriver.exe");
+            WebDriverManager.chromedriver().setup();
+            //
+            //ChromeOptions options = new ChromeOptions();
+            //options.addArguments("--remote-allow-origins=*");
+            //driver = new ChromeDriver(options);
+            driver = new ChromeDriver();
+        }
         //
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(IMPLICITLY_WAIT_SECONDS)); // 0 by default
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(180)); // 300 by default
@@ -151,6 +162,16 @@ public abstract class TestRunner {
         driver.get(BASE_URL);
         presentationSleep(); // For Presentation ONLY
         return new HomeUbsPage(driver);
+    }
+
+    private void readPreperties() {
+        propertiesUtil = new PropertiesUtil();
+//        try {
+//            implicitlyWaitSeconds = Long.valueOf(propertiesUtil.readImplicitlyWait());
+//        } catch (NumberFormatException e) {
+//            implicitlyWaitSeconds = 100L;
+//        }
+        //baseUrl = propertiesUtil.readBaseUrl();
     }
 
 }
