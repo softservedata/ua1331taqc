@@ -12,6 +12,7 @@ public class VisileTest {
     private final Long IMPLICITLY_WAIT_SECONDS = 10L;
     private WebDriver driver;
     private JavascriptExecutor js;
+    protected boolean isTestSuccessful = false;
 
     @BeforeAll
     public void setup() {
@@ -39,13 +40,21 @@ public class VisileTest {
     @BeforeEach
     public void setupThis() throws InterruptedException {
         driver.get("https://www.pick-up.city/#/ubs");
+        isTestSuccessful = false;
         Thread.sleep(2000); // For Presentation
         //
         System.out.println("\t@BeforeEach executed");
     }
 
     @AfterEach
-    public void tearThis() throws InterruptedException {
+    public void tearThis(TestInfo testInfo) throws InterruptedException {
+        if (!isTestSuccessful) {
+            // Log.error
+            //logger.error("Test_Name = " + testInfo.getDisplayName() + " failed");
+            //
+            System.out.println("\t\t\tTest_Name = " + testInfo.getDisplayName() + " fail");
+            System.out.println("\t\t\tTest_Method = " + testInfo.getTestMethod() + " fail");
+        }
         Thread.sleep(4000); // For Presentation
         //
         System.out.println("\t@AfterEach executed");
@@ -74,6 +83,7 @@ public class VisileTest {
         System.out.println("img.ubs-header-sing-in-img howPrepare.isDisplayed() = " + howPrepare.isDisplayed());
         Thread.sleep(2000); // For Presentation
         //
+        isTestSuccessful = true;
         //
         System.out.println("Test done");
     }

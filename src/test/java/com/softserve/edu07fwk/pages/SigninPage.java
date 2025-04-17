@@ -86,19 +86,19 @@ public class SigninPage {
 
     // PageObject Functional Operation
 
-    public void typeEmail(String email) {
+    private void typeEmail(String email) {
         clickEmailField();
         clearEmailField();
         sendKeysEmailField(email);
     }
 
-    public void typePassword(String password) {
+    private void typePassword(String password) {
         clickPasswordField();
         clearPasswordField();
         sendKeysPasswordField(password);
     }
 
-    public void activateSigninButton() {
+    private void activateSigninButton() {
         JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
         javascriptExecutor.executeScript(String.format(REMOVE_ATTRIBUTE, "button[type=\"submit\"]"));
         //getSigninButton()

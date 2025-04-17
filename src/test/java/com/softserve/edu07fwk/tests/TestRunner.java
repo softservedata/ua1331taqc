@@ -1,16 +1,14 @@
 package com.softserve.edu07fwk.tests;
 
-import com.softserve.edu07fwk.pages.AboutusPage;
 import com.softserve.edu07fwk.pages.HomeUbsPage;
-import com.softserve.edu07fwk.pages.SigninPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.openqa.selenium.*;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.File;
@@ -27,7 +25,7 @@ import java.util.Date;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(RunnerExtension.class)
-public class GreencityLinearTest {
+public abstract class TestRunner {
     //
     private final String BASE_URL = "https://www.greencity.cx.ua/#/ubs";
     //private final String BASE_URL = "http://greencity.eastus.cloudapp.azure.com/#/ubs";
@@ -37,9 +35,9 @@ public class GreencityLinearTest {
     private final String TIME_TEMPLATE = "yyyy-MM-dd_HH-mm-ss-S";
     private final String LOCALSTORAGE_REMOVE = "window.localStorage.removeItem('%s');";
     private final String REMOVE_ATTRIBUTE = "document.querySelector('%s').removeAttribute('disabled')";
-    private WebDriver driver;
-    private JavascriptExecutor javascriptExecutor;
-    //protected static boolean isTestSuccessful = false;
+    protected WebDriver driver;
+    protected JavascriptExecutor javascriptExecutor;
+    protected static boolean isTestSuccessful = false;
     //protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     // Overload
@@ -121,15 +119,14 @@ public class GreencityLinearTest {
 
     @BeforeEach
     public void setupThis() throws InterruptedException {
-        driver.get(BASE_URL);
-        presentationSleep(4); // For Presentation ONLY
+        //driver.get(BASE_URL);
+        //presentationSleep(4); // For Presentation ONLY
         //
         System.out.println("\t@BeforeEach executed");
     }
 
     @AfterEach
     public void tearThis(TestInfo testInfo) throws InterruptedException {
-        //if (!isTestSuccessful) {
         if (!RunnerExtension.isTestSuccessful) {
             // Log.error
             //logger.error("Test_Name = " + testInfo.getDisplayName() + " failed");
@@ -150,80 +147,10 @@ public class GreencityLinearTest {
         System.out.println("\t@AfterEach executed");
     }
 
-    @Test
-    public void checkAbout() throws InterruptedException {
-        System.out.println("Test start");
-        //
-        // Login
-        //driver.findElement(By.cssSelector("app-ubs .ubs-header-sing-in-img")).click();
-        //
-        // Goto Greencity
-        driver.findElement(By.cssSelector("div.header_navigation-menu-ubs a[href*='/greenCity']")).click();
+    protected HomeUbsPage loadApplication() {
+        driver.get(BASE_URL);
         presentationSleep(); // For Presentation ONLY
-        //
-        // Goto About Us
-        driver.findElement(By.cssSelector("div.header_container  a[href*='/greenCity/about']")).click();
-        presentationSleep(); // For Presentation ONLY
-        //
-        // Get section__header
-        WebElement aboutusHeader = driver.findElement(By.cssSelector("div.about-section h2.section__header"));
-        presentationSleep(); // For Presentation ONLY
-        //
-        Assertions.assertTrue(aboutusHeader.getText().toLowerCase().contains("About Us".toLowerCase()));
-    }
-
-    @Test
-    public void checkAboutPages() throws InterruptedException {
-        System.out.println("Test start");
-        //
-        AboutusPage aboutusPage = new HomeUbsPage(driver)
-                .gotoHomeGreencityPage()
-                .chooseEnglish()
-                .gotoAboutusPage();
-        //
-        Assertions.assertEquals(AboutusPage.ABOUT_US, aboutusPage.getSectionHeaderText());
-    }
-
-    @Test
-    public void checkSignin() throws InterruptedException {
-        System.out.println("Test start");
-        //
-        // Goto Login
-        driver.findElement(By.cssSelector("app-ubs .ubs-header-sing-in-img")).click();
-        //
-        // Type email
-        driver.findElement(By.id("email")).click();
-        driver.findElement(By.id("email")).clear();
-        driver.findElement(By.id("email")).sendKeys("cicada32073@mailshan.com");
-        presentationSleep(2); // For Presentation ONLY
-        //
-        // Type password
-        driver.findElement(By.id("password")).click();
-        driver.findElement(By.id("password")).clear();
-        driver.findElement(By.id("password")).sendKeys("Qwerty_1");
-        presentationSleep(2); // For Presentation ONLY
-        //
-        // Click Signin Button
-        javascriptExecutor.executeScript(String.format(REMOVE_ATTRIBUTE, "button[type=\"submit\"]"));
-        //driver.findElement(By.cssSelector("button[type='submit']")).click();
-        presentationSleep(2); // For Presentation ONLY
-        //
-    }
-
-    @ParameterizedTest
-    @CsvSource({"cicada32073@mailshan.com, Qwerty_1"})
-    public void checkSigninPages(String email, String password) {
-        System.out.println("Test start");
-        //
-        SigninPage signinPage = new HomeUbsPage(driver)
-                .gotoHomeGreencityPage()
-                .chooseEnglish()
-                .gotoSigninPage()
-                .login(email, password);
-        //
-        Assertions.assertEquals(email, signinPage.getEmailFieldText());
-        Assertions.assertEquals(password, signinPage.getPasswordFieldText());
-        //
+        return new HomeUbsPage(driver);
     }
 
 }
