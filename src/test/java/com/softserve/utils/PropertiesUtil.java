@@ -7,6 +7,7 @@ public class PropertiesUtil {
     private final String PATH_SEPARATOR = "/";
     private final String FILE_NAME = "application-test.properties";
     //
+    private final String BROWSER_NAME = "browser.name";
     private final String BASE_URL = "base.url";
     private final String IMPLICITLY_WAIT_SECONDS = "implicitly.wait.seconds";
     //
@@ -42,13 +43,18 @@ public class PropertiesUtil {
         }
     }
 
+    public String readBrowserName() {
+        String baseUrl = appProps.getProperty(BROWSER_NAME, "chrome");
+        return baseUrl;
+    }
+
     public String readBaseUrl() {
-        String baseUrl = appProps.getProperty(BASE_URL, null);
+        String baseUrl = appProps.getProperty(BASE_URL, "https://www.greencity.cx.ua/#/ubs");
         return baseUrl;
     }
 
     public String readImplicitlyWait() {
-        String baseUrl = appProps.getProperty(IMPLICITLY_WAIT_SECONDS, null);
+        String baseUrl = appProps.getProperty(IMPLICITLY_WAIT_SECONDS, "10");
         return baseUrl;
     }
 }       
