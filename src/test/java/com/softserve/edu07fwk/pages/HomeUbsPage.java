@@ -3,9 +3,12 @@ package com.softserve.edu07fwk.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HomeUbsPage {
 
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     protected WebDriver driver;
     //
     private WebElement aboutService;
@@ -110,6 +113,8 @@ public class HomeUbsPage {
     // PageObject Business Operation
 
     public HomeGreencityPage gotoHomeGreencityPage() {
+        logger.debug("start gotoHomeGreencityPage()");
+        //
         clickGreenCity();
         return new HomeGreencityPage(driver);
     }

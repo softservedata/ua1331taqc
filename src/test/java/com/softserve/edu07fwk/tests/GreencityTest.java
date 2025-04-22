@@ -13,6 +13,7 @@ public class GreencityTest extends TestRunner {
 
     @Test
     public void checkAboutPages() throws InterruptedException {
+        logger.info("Start checkAboutPages()");
         AboutusPage aboutusPage = loadApplication()
                 .gotoHomeGreencityPage()
                 .chooseEnglish()
@@ -26,6 +27,7 @@ public class GreencityTest extends TestRunner {
     //public void checkSigninPages(String email, String password) {
     @MethodSource("com.softserve.edu07fwk.tests.TestParameters#provideUsers")
     public void checkSigninPages(User user) {
+        logger.info("Start checkSigninPages( " + user + " )");
         SigninPage signinPage = loadApplication()
                 .gotoHomeGreencityPage()
                 .chooseEnglish()

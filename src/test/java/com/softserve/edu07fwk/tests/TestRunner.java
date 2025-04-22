@@ -12,6 +12,8 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +43,7 @@ public abstract class TestRunner {
     protected WebDriver driver;
     protected JavascriptExecutor javascriptExecutor;
     protected static boolean isTestSuccessful = false;
-    //protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     // Overload
     protected void presentationSleep() {
@@ -60,7 +62,7 @@ public abstract class TestRunner {
 
     // Add test name
     private void takeScreenShot() {
-        //logger.debug("Start takeScreenShot()");
+        logger.debug("Start takeScreenShot()");
         //
         //String currentTime = new SimpleDateFormat(TIME_TEMPLATE).format(new Date());
         LocalDateTime localDate = LocalDateTime.now();
@@ -78,7 +80,7 @@ public abstract class TestRunner {
 
     // TODO Get Actual Page
     private void takePageSource() {
-        //logger.debug("Start takePageSource()");
+        logger.debug("Start takePageSource()");
         //
         String currentTime = new SimpleDateFormat(TIME_TEMPLATE).format(new Date());
         String pageSource = driver.getPageSource();
@@ -140,7 +142,8 @@ public abstract class TestRunner {
     public void tearThis(TestInfo testInfo) throws InterruptedException {
         if (!RunnerExtension.isTestSuccessful) {
             // Log.error
-            //logger.error("Test_Name = " + testInfo.getDisplayName() + " failed");
+            // logger.error("Test_Display_Name = " + testInfo.getDisplayName() + " failed");
+            logger.error("Test_Name = " + testInfo.getTestMethod() + " failed");
             //
             System.out.println("\t\t\tTest_Name = " + testInfo.getDisplayName() + " fail");
             System.out.println("\t\t\tTest_Method = " + testInfo.getTestMethod() + " fail");
@@ -159,6 +162,8 @@ public abstract class TestRunner {
     }
 
     protected HomeUbsPage loadApplication() {
+        logger.debug("Start loadApplication()");
+        //
         driver.get(BASE_URL);
         presentationSleep(); // For Presentation ONLY
         return new HomeUbsPage(driver);

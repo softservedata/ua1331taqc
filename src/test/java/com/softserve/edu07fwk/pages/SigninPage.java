@@ -5,11 +5,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SigninPage {
+public final class SigninPage {
     private final String VALUE_ATTRIBUTE = "value";
     private final String REMOVE_ATTRIBUTE = "document.querySelector('%s').removeAttribute('disabled')";
 
+    private static final Logger logger = LoggerFactory.getLogger(SigninPage.class);
     protected WebDriver driver;
     //
     private WebElement emailField;
@@ -110,6 +113,8 @@ public class SigninPage {
     //public HomeGreencityPage login(String email, String password) {
     //public SigninPage login(String email, String password) {
     public SigninPage login(User user) {
+        logger.debug("start login(), user = " + user);
+        //
         //typeEmail(email);
         typeEmail(user.getEmail());
         //typePassword(password);

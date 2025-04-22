@@ -38,6 +38,8 @@ public class HomeGreencityPage extends MenuPart {
     // PageObject Business Operation
 
     public HomeGreencityPage chooseEnglish() {
+        logger.debug("start chooseEnglish()");
+        //
         //chooseEnglishLanguage();
         clickEnglish();
         return new HomeGreencityPage(driver);

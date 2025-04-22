@@ -120,6 +120,8 @@ public abstract class MenuPart extends HeaderPart {
     }
 
     public SigninPage gotoSigninPage() {
+        logger.debug("start gotoSigninPage()");
+        //
         clickSignin();
         return new SigninPage(driver);
     }
