@@ -1,4 +1,4 @@
-package com.softserve.edu02junit;
+package com.softserve.edu.junit;
 
 import org.junit.jupiter.api.*;
 
