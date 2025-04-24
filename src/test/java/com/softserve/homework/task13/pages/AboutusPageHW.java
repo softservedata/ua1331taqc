@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class AboutusPageHW extends MenuPartHW {
-
+    public static final String ABOUT_US = "About Us";
     //
     private WebElement sectionHeader;
 

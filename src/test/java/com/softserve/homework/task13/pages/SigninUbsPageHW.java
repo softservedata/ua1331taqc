@@ -1,7 +1,6 @@
 package com.softserve.homework.task13.pages;
 
-import com.softserve.edu07fwk.data.User;
-import com.softserve.edu07fwk.pages.SigninPage;
+import com.softserve.homework.task13.data.User;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;

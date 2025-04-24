@@ -1,11 +1,18 @@
 package com.softserve.homework.task13.tests;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+
+import com.softserve.homework.task13.pages.AboutusPageHW;
+import com.softserve.homework.task13.pages.HomeUbsPageHW;
+import com.softserve.homework.task13.pages.SigninUbsPageHW;
+import com.softserve.homework.task13.data.User;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +29,7 @@ import java.util.Date;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(RunnerExtensionHW.class)
 public class GreenCityLinearHWTest {
+    //
     private final String BASE_URL = "https://www.greencity.cx.ua/#/ubs";
     //private final String BASE_URL = "http://greencity.eastus.cloudapp.azure.com/#/ubs";
     private final Long IMPLICITLY_WAIT_SECONDS = 10L;
@@ -39,6 +47,7 @@ public class GreenCityLinearHWTest {
     protected void presentationSleep() {
         presentationSleep(1);
     }
+
     // Overload
     protected void presentationSleep(int seconds) {
         try {
@@ -101,7 +110,6 @@ public class GreenCityLinearHWTest {
         System.out.println("@BeforeAll executed");
     }
 
-
     @AfterAll
     public void tear() {
         if (driver != null) {
@@ -142,6 +150,7 @@ public class GreenCityLinearHWTest {
         //
         System.out.println("\t@AfterEach executed");
     }
+
     @Test
     public void checkAbout() throws InterruptedException {
         System.out.println("Test start");
@@ -162,6 +171,18 @@ public class GreenCityLinearHWTest {
         presentationSleep(); // For Presentation ONLY
         //
         Assertions.assertTrue(aboutusHeader.getText().toLowerCase().contains("About Us".toLowerCase()));
+    }
+
+    @Test
+    public void checkAboutPages() throws InterruptedException {
+        System.out.println("Test start");
+        //
+        AboutusPageHW aboutusPage = new HomeUbsPageHW(driver)
+                .gotoHomeGreencityPage()
+                .chooseEnglish()
+                .gotoAboutusPage();
+        //
+        Assertions.assertEquals(AboutusPageHW.ABOUT_US, aboutusPage.getSectionHeaderText());
     }
 
     @Test
@@ -188,5 +209,52 @@ public class GreenCityLinearHWTest {
         //driver.findElement(By.cssSelector("button[type='submit']")).click();
         presentationSleep(2); // For Presentation ONLY
         //
+    }
+
+    @ParameterizedTest
+    @CsvSource({"cicada32073@mailshan.com, Qwerty_1"})
+    public void checkSigninPages(String email, String password) {
+        System.out.println("Test start");
+        //
+        SigninUbsPageHW signinPage = new HomeUbsPageHW(driver)
+                .gotoHomeGreencityPage()
+                .chooseEnglish()
+                .gotoSigninPage()
+                .login(new User(email, password, "Qwerty1"));
+        //.login(UserRepository.getDefault());
+        //.login(email, password);
+        //
+        Assertions.assertEquals(email, signinPage.getEmailFieldText());
+        Assertions.assertEquals(password, signinPage.getPasswordFieldText());
+        //
+    }
+
+    @Test
+    public void checkNewTab() {
+        String originalWindow = driver.getWindowHandle();
+        // Create new tab
+        driver.switchTo().newWindow(WindowType.TAB);
+        driver.get("https://www.google.com/");
+        //javascriptExecutor.executeScript("window.open('https://www.google.com')");
+        presentationSleep(); // For Presentation ONLY
+        //
+        System.out.println("Number of tabs = " + driver.getWindowHandles().size());
+        driver.findElement(By.name("q")).sendKeys("mac" + Keys.ENTER);
+        presentationSleep(); // For Presentation ONLY
+        //
+        for (String windowHandle : driver.getWindowHandles()) {
+            driver.switchTo().window(windowHandle);
+            presentationSleep(2); // For Presentation ONLY
+            System.out.println("Title = " + driver.getTitle());
+        }
+        //
+        for (String windowHandle : driver.getWindowHandles()) {
+            if (originalWindow.contentEquals(windowHandle)) {
+                driver.switchTo().window(windowHandle);
+                System.out.println("Return to Original tab");
+                break;
+            }
+        }
+        presentationSleep(2); // For Presentation ONLY
     }
 }

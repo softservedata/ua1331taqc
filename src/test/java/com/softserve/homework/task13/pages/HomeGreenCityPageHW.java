@@ -37,13 +37,13 @@ public class HomeGreenCityPageHW extends MenuPartHW {
     // PageObject Functional Operation
 
     // PageObject Business Operation
-    public HomeGreenCityPageHW chooseEnglishHW() {
+    public HomeGreenCityPageHW chooseEnglish() {
         //chooseEnglishLanguage();
         clickEnglish();
         return new HomeGreenCityPageHW(driver);
     }
 
-    public HomeGreenCityPageHW chooseUkrainianHW() {
+    public HomeGreenCityPageHW chooseUkrainian() {
         //chooseUkrainianLanguage();
         clickUkrainian();
         return new HomeGreenCityPageHW(driver);
