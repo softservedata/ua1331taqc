@@ -64,7 +64,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.30.0</version>
+            <version>4.31.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -123,6 +123,13 @@
             <version>3.2.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -144,9 +151,10 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>21</source>
+                    <target>21</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>
 

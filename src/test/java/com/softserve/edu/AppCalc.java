@@ -3,8 +3,17 @@ package com.softserve.edu;
 import java.util.Scanner;
 
 public class AppCalc {
+private String q;
 
-    /*
+    public String getQ() {
+        return q;
+    }
+
+    public void setQ(String q) {
+        this.q = q;
+    }
+
+/*
     // Not Testability
     // Spagetti Code
     public static void main(String[] args) {
@@ -21,6 +30,8 @@ public class AppCalc {
         sc.close();
     }
     */
+
+
 
     public static void main(String[] args) {
         System.out.println("Start");

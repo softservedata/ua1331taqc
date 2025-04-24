@@ -20,7 +20,7 @@ public class Cals2Test {
     }
 
     @BeforeEach
-    public void setupThis() {
+    public void setupThis()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         {
         System.out.println("\t@BeforeEach executed");
     }
 
@@ -34,7 +34,7 @@ public class Cals2Test {
     public void checkAdd1() {
         //Calc calc = new Calc();
         double actual;
-        double expected;
+        double  expected;
         //
         expected = 10.0005;
         actual = calc.add(5, 5);
