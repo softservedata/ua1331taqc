@@ -1,14 +1,14 @@
-package com.softserve.edu.pr_task10;
+package com.softserve.edu.pr_task11;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
@@ -17,7 +17,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestSamples3 {
+public class TestSamples4 {
 
     @FindBy(css = ".lang-option")
     private WebElement langOption;
@@ -34,19 +34,19 @@ public class TestSamples3 {
     @FindBy(css = "app-sign-in h2")
     private WebElement signInDetailsText;
 
-    @FindBy(css = "label[for=\"email\"]")
+    @FindBy(css = "label[for='email']")
     private WebElement emailLabel;
 
     @FindBy(id = "email")
     private WebElement emailInput;
 
-    @FindBy(css = "label[for=\"password\"]")
+    @FindBy(css = "label[for='password']")
     private WebElement passwordLabel;
 
     @FindBy(id = "password")
     private WebElement passwordInput;
 
-    @FindBy(css = "button[type=\"submit\"]")
+    @FindBy(css = "button[type='submit']")
     private WebElement signInSubmitButton;
 
     @FindBy(css = ".alert-general-error")
@@ -82,6 +82,7 @@ public class TestSamples3 {
     private static WebDriver driver;
     private WebDriverWait wait;
 
+
     private void switchToEng() {
         langOption.click();
         String currentLanguage = langOption.getText().trim();
@@ -102,101 +103,106 @@ public class TestSamples3 {
         driver.manage().deleteAllCookies();
         driver.get("http://localhost:4205/#/greenCity");
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-       PageFactory.initElements(driver, this);
+        PageFactory.initElements(driver, this);
         switchToEng();
     }
 
     @Test
     public void verifyTitle() {
         assertEquals("GreenCity", driver.getTitle());
-        // assertThat(driver.getTitle(), is("GreenCity"));
     }
 
+    @DisplayName("Positive Login Tests")
     @ParameterizedTest
     @CsvSource({
             "gabim67170@npo2.com, Gabim67170!",
+            "cptt31km3v@knmcadibav.com, Cptt31km3v@",
+            "eqoyutv@mailto.plus, eqoyutv@T3"
     })
 
-    public void signIn(String email, String password) {
-       signInButton.click();
+    public void signInPositive(String email, String password) {
+        signInButton.click();
 
         assertThat(welcomeText.getText(), is("Welcome back!"));
-        assertThat(signInDetailsText.getText(), is("Please enter your details to sign in."));
-        assertThat(emailLabel.getText(), is("Email"));
-
-        emailInput.sendKeys("gabim67170@npo2.com");
+        emailInput.sendKeys(email);
         assertThat(Objects.requireNonNull(emailInput.getAttribute("value")), is(email));
-
-        passwordInput.sendKeys("Gabim67170!");
+        passwordInput.sendKeys(password);
         assertThat(Objects.requireNonNull(passwordInput.getAttribute("value")), is(password));
 
         signInSubmitButton.click();
     }
 
+    @DisplayName("Negative Test: Invalid Email Format")
     @ParameterizedTest
     @CsvSource({
-            "Please check that your e-mail address is indicated correctly"
+            "gabim67170npo2.com, Gabim67170!, Please check that your e-mail address is indicated correctly",
+            "cptt31km3vknmcadibav.com, Cptt31km3v@, Please check that your e-mail address is indicated correctly"
     })
-
-    public void signInNotValidEmail(String message) {
+    public void signInNotValidEmail(String email, String password, String expectedError) {
         signInButton.click();
-        emailInput.sendKeys("gabim67170npo2.com");
-        passwordInput.sendKeys("Gabim67170!");
+        emailInput.sendKeys(email);
+        passwordInput.sendKeys(password);
         signInSubmitButton.click();
-        assertThat(errorEmail.getText(), is(message));
+        assertThat(errorEmail.getText(), is(expectedError));
     }
 
+    @DisplayName("Negative Test: Invalid Password")
     @ParameterizedTest
     @CsvSource({
-            "Bad email or password"
+            "cptt31km3v@knmcadibav.com, Cpt31km3v@, Bad email or password",
+            "eqoyutv@mailto.plus, eqoyutv@У3, Bad email or password"
     })
 
-    public void signInNotValidPassword(String message) {
+    public void signInNotValidPassword(String email, String password, String expectedError) {
         signInButton.click();
-        emailInput.sendKeys("gabim67170@npo2.com");
-        passwordInput.sendKeys("Gabi67170!");
+        emailInput.sendKeys(email);
+        passwordInput.sendKeys(password);
         signInSubmitButton.click();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        assertThat(errorPassword.getText().trim(), is(message));
+        assertThat(errorPassword.getText().trim(), is(expectedError));
     }
 
+    @DisplayName("Negative Test: Password is Required")
     @ParameterizedTest
     @CsvSource({
-            "Password is required"
+            "gabim67170@npo2.com, '', Password is required",
+            "eqoyutv@mailto.plus, '', Password is required"
     })
 
-    public void signInPasswordIsRequired(String message) {
+    public void signInPasswordIsRequired(String email, String password, String expectedError) {
         signInButton.click();
-        emailInput.sendKeys("gabim67170npo2.com");
-        passwordInput.sendKeys("");
+        emailInput.sendKeys(email);
+        passwordInput.sendKeys(password);
         signInSubmitButton.click();
-        assertThat(passwordRequiredError.getText(), is(message));
+        assertThat(passwordRequiredError.getText(), is(expectedError));
     }
 
+    @DisplayName("Negative Test: Email is Required")
     @ParameterizedTest
     @CsvSource({
-            "Email is required"
+            "'', Gabim67170!, Email is required",
+            "'', eqoyutv@T3, Email is required"
     })
 
-    public void signInEmailIsRequired(String message) {
+    public void signInEmailIsRequired(String email, String password, String expectedError) {
         signInButton.click();
-        emailInput.sendKeys("");
-        passwordInput.sendKeys("Gabim67170!");
+        emailInput.sendKeys(email);
+        passwordInput.sendKeys(password);
         signInSubmitButton.click();
-        assertThat(emailRequiredError.getText(), is(message));
+        assertThat(emailRequiredError.getText(), is(expectedError));
     }
 
+    @DisplayName("Negative Test: Both Fields are Required")
     @ParameterizedTest
     @CsvSource({
-            "Please fill all red fields"
+            "'', '', Please fill all red fields"
     })
-
-    public void signInBothFieldsRequired(String message) {
+    public void signInBothFieldsRequired(String email, String password, String expectedError) {
         signInButton.click();
-        emailInput.sendKeys("");
-        passwordInput.sendKeys("");
+        emailInput.sendKeys(email);
+        passwordInput.sendKeys(password);
         signInSubmitButton.click();
-        assertThat(errorPassword.getText(), is(message));
+        assertThat(errorPassword.getText(), is(expectedError));
     }
 
     @Test
