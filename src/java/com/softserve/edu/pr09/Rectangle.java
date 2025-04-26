@@ -1,4 +1,4 @@
-package com.softserve.edu.pr_task09;
+package com.softserve.edu.pr09;
 
 public class Rectangle {
     private double width;

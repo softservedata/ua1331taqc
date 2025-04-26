@@ -1,12 +1,12 @@
-package com.softserve.edu.pr_task09;
+package com.softserve.edu.pr09;
 
-import com.softserve.edu.pr_task09.Rectangle;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RectangleTest {
     @Test
@@ -71,7 +71,7 @@ public class RectangleTest {
 
         expected = 15;
         actual = rectangle.calculateArea();
-        assertEquals(expected, actual, 0.01);
+        Assertions.assertEquals(expected, actual, 0.01);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class RectangleTest {
 
         expected = 16;
         actual = rectangle.calculatePerimeter();
-        assertEquals(expected, actual, 0.01);
+        Assertions.assertEquals(expected, actual, 0.01);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class RectangleTest {
 
         expected = 5.83;
         actual = rectangle.calculateDiagonal();
-        assertEquals(expected, actual, 0.01);
+        Assertions.assertEquals(expected, actual, 0.01);
     }
 }
 
