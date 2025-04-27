@@ -138,6 +138,7 @@ public class TestSamples4 {
             "gabim67170npo2.com, Gabim67170!, Please check that your e-mail address is indicated correctly",
             "cptt31km3vknmcadibav.com, Cptt31km3v@, Please check that your e-mail address is indicated correctly"
     })
+
     public void signInNotValidEmail(String email, String password, String expectedError) {
         signInButton.click();
         emailInput.sendKeys(email);
@@ -197,6 +198,7 @@ public class TestSamples4 {
     @CsvSource({
             "'', '', Please fill all red fields"
     })
+
     public void signInBothFieldsRequired(String email, String password, String expectedError) {
         signInButton.click();
         emailInput.sendKeys(email);
