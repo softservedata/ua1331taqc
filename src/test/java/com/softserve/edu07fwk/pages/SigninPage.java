@@ -1,12 +1,18 @@
 package com.softserve.edu07fwk.pages;
 
 import com.softserve.edu07fwk.data.User;
+import com.softserve.edu07fwk.tools.WebDriverWrapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Duration;
+import java.util.List;
 
 public final class SigninPage {
     private final String VALUE_ATTRIBUTE = "value";
@@ -21,6 +27,7 @@ public final class SigninPage {
 
     public SigninPage(WebDriver driver) {
         this.driver = driver;
+        closePopup();
         initElements();
     }
 
@@ -106,6 +113,24 @@ public final class SigninPage {
         JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
         javascriptExecutor.executeScript(String.format(REMOVE_ATTRIBUTE, "button[type=\"submit\"]"));
         //getSigninButton()
+    }
+
+    private void closePopup() {
+        WebDriverWrapper.setImplicitlyWait(2);
+        List<WebElement> iframe = driver.findElements(By.cssSelector("iframe"));
+        if (iframe.size() > 0) {
+            driver.switchTo().frame(iframe.get(0));
+            List<WebElement> popupButton = driver.findElements(By.id("close"));
+            if (popupButton.size() > 0) {
+                popupButton.get(0).click();
+            }
+            driver.switchTo().defaultContent();
+            //
+            WebDriverWrapper.setImplicitlyWait(0);
+            (new WebDriverWait(WebDriverWrapper.getDriver(), Duration.ofSeconds(10))).until(
+                    ExpectedConditions.stalenessOf(iframe.get(0)));
+        }
+        WebDriverWrapper.restoreImplicitlyWait();
     }
 
     // PageObject Business Operation

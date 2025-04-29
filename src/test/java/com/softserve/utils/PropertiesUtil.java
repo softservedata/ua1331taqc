@@ -44,8 +44,8 @@ public class PropertiesUtil {
     }
 
     public String readBrowserName() {
-        String baseUrl = appProps.getProperty(BROWSER_NAME, "chrome");
-        return baseUrl;
+        String baseName = appProps.getProperty(BROWSER_NAME, "chrome");
+        return baseName.toLowerCase().trim();
     }
 
     public String readBaseUrl() {
@@ -54,7 +54,7 @@ public class PropertiesUtil {
     }
 
     public String readImplicitlyWait() {
-        String baseUrl = appProps.getProperty(IMPLICITLY_WAIT_SECONDS, "10");
-        return baseUrl;
+        String implicitlyWait = appProps.getProperty(IMPLICITLY_WAIT_SECONDS, "10");
+        return implicitlyWait;
     }
 }       

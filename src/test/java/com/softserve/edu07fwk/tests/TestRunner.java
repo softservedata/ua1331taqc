@@ -1,11 +1,15 @@
 package com.softserve.edu07fwk.tests;
 
 import com.softserve.edu07fwk.pages.HomeUbsPage;
+import com.softserve.edu07fwk.tools.UrlWrapper;
+import com.softserve.edu07fwk.tools.WebDriverWrapper;
 import com.softserve.utils.PropertiesUtil;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -27,21 +31,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+//@Execution(ExecutionMode.CONCURRENT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(RunnerExtension.class)
 public abstract class TestRunner {
     //
-    private final String BASE_URL = "https://www.greencity.cx.ua/#/ubs";
-    //private final String BASE_URL = "http://greencity.eastus.cloudapp.azure.com/#/ubs";
-    private final Long IMPLICITLY_WAIT_SECONDS = 10L;
-    private final Long IMPLICITLY_WAIT_ONE_SECONDS = 1L;
     private final Long ONE_SECOND_DELAY = 1000L;
-    private final String TIME_TEMPLATE = "yyyy-MM-dd_HH-mm-ss-S";
-    private final String LOCALSTORAGE_REMOVE = "window.localStorage.removeItem('%s');";
-    private final String REMOVE_ATTRIBUTE = "document.querySelector('%s').removeAttribute('disabled')";
-    private PropertiesUtil propertiesUtil;
-    protected WebDriver driver;
-    protected JavascriptExecutor javascriptExecutor;
+    //
     protected static boolean isTestSuccessful = false;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -60,80 +56,20 @@ public abstract class TestRunner {
         }
     }
 
-    // Add test name
-    private void takeScreenShot() {
-        logger.debug("Start takeScreenShot()");
-        //
-        //String currentTime = new SimpleDateFormat(TIME_TEMPLATE).format(new Date());
-        LocalDateTime localDate = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TIME_TEMPLATE);
-        String currentTime = localDate.format(formatter);
-        //
-        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        try {
-            FileUtils.copyFile(scrFile, new File("./" + currentTime + "_screenshot.png"));
-        } catch (IOException e) {
-            // Log.error
-            throw new RuntimeException(e);
-        }
-    }
-
-    // TODO Get Actual Page
-    private void takePageSource() {
-        logger.debug("Start takePageSource()");
-        //
-        String currentTime = new SimpleDateFormat(TIME_TEMPLATE).format(new Date());
-        String pageSource = driver.getPageSource();
-        byte[] strToBytes = pageSource.getBytes();
-        Path path = Paths.get("./" + currentTime + "_" + "_source.html.txt");
-        try {
-            Files.write(path, strToBytes, StandardOpenOption.CREATE);
-        } catch (IOException e) {
-            // Log.error
-            throw new RuntimeException(e);
-        }
-    }
-
     @BeforeAll
     public void setup() {
-        readPreperties();
-        if (propertiesUtil.readBrowserName().contains("firefox")) {
-            WebDriverManager.firefoxdriver().setup();
-            driver = new FirefoxDriver();
-        } else {
-            //System.setProperty("webdriver.chrome.driver", "./lib/chromedriver.exe");
-            WebDriverManager.chromedriver().setup();
-            //
-            //ChromeOptions options = new ChromeOptions();
-            //options.addArguments("--remote-allow-origins=*");
-            //driver = new ChromeDriver(options);
-            driver = new ChromeDriver();
-        }
-        //
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(IMPLICITLY_WAIT_SECONDS)); // 0 by default
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(180)); // 300 by default
-        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(100)); // 30 by default
-        driver.manage().window().maximize();
-        //
-        javascriptExecutor = (JavascriptExecutor) driver;
-        //
         System.out.println("@BeforeAll executed");
     }
 
     @AfterAll
     public void tear() {
-        if (driver != null) {
-            driver.quit();
-            //driver.close();
-        }
+        WebDriverWrapper.quit();
         //
         System.out.println("@AfterAll executed");
     }
 
     @BeforeEach
     public void setupThis() throws InterruptedException {
-        //driver.get(BASE_URL);
-        //presentationSleep(4); // For Presentation ONLY
         //
         System.out.println("\t@BeforeEach executed");
     }
@@ -148,14 +84,13 @@ public abstract class TestRunner {
             System.out.println("\t\t\tTest_Name = " + testInfo.getDisplayName() + " fail");
             System.out.println("\t\t\tTest_Method = " + testInfo.getTestMethod() + " fail");
             //
-            takeScreenShot();
-            takePageSource();
+            WebDriverWrapper.takeScreenShot();
+            WebDriverWrapper.takePageSource();
         }
-        driver.manage().deleteAllCookies();
-        javascriptExecutor.executeScript(String.format(LOCALSTORAGE_REMOVE, "accessToken"));
-        javascriptExecutor.executeScript(String.format(LOCALSTORAGE_REMOVE, "refreshToken"));
-        // js.executeScript(String.format("window.localStorage.setItem('%s','%s');", item, value));
-        driver.navigate().refresh();
+        WebDriverWrapper.deleteCookies();
+        WebDriverWrapper.deleteTokens();
+        WebDriverWrapper.refreshPage();
+        //
         presentationSleep(4); // For Presentation ONLY
         //
         System.out.println("\t@AfterEach executed");
@@ -164,19 +99,9 @@ public abstract class TestRunner {
     protected HomeUbsPage loadApplication() {
         logger.debug("Start loadApplication()");
         //
-        driver.get(BASE_URL);
+        WebDriverWrapper.gotoUrl(UrlWrapper.getUrl());
         presentationSleep(); // For Presentation ONLY
-        return new HomeUbsPage(driver);
-    }
-
-    private void readPreperties() {
-        propertiesUtil = new PropertiesUtil();
-//        try {
-//            implicitlyWaitSeconds = Long.valueOf(propertiesUtil.readImplicitlyWait());
-//        } catch (NumberFormatException e) {
-//            implicitlyWaitSeconds = 100L;
-//        }
-        //baseUrl = propertiesUtil.readBaseUrl();
+        return new HomeUbsPage(WebDriverWrapper.getDriver());
     }
 
 }
