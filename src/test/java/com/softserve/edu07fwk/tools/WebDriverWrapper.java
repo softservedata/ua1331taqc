@@ -26,6 +26,7 @@ public final class WebDriverWrapper {
 
     private static final String TIME_TEMPLATE = "yyyy-MM-dd_HH-mm-ss-S";
     private static final String LOCALSTORAGE_REMOVE_ITEM = "window.localStorage.removeItem('%s');";
+    private static final String LOCALSTORAGE_SET_ITEM = "window.localStorage.setItem('%s','%s');";
     private static PropertiesUtil propertiesUtil;
     private static Map<Long, WebDriver> drivers;
 
@@ -155,13 +156,25 @@ public final class WebDriverWrapper {
     }
 
     public static void deleteTokens() {
+        //JavascriptExecutor js = getJavascriptExecutor();
+        //js.executeScript(String.format(LOCALSTORAGE_REMOVE_ITEM, "accessToken"));
+        //js.executeScript(String.format(LOCALSTORAGE_REMOVE_ITEM, "refreshToken"));
+        removeItemLocalStorage("accessToken");
+        removeItemLocalStorage("refreshToken");
+    }
+
+    public static void setItemLocalStorage(String item, String value) {
         JavascriptExecutor js = getJavascriptExecutor();
-        js.executeScript(String.format(LOCALSTORAGE_REMOVE_ITEM, "accessToken"));
-        js.executeScript(String.format(LOCALSTORAGE_REMOVE_ITEM, "refreshToken"));
+        js.executeScript(String.format(LOCALSTORAGE_SET_ITEM, item, value));
+    }
+
+    public static void removeItemLocalStorage(String item) {
+        JavascriptExecutor js = getJavascriptExecutor();
+        js.executeScript(String.format(LOCALSTORAGE_REMOVE_ITEM, item));
     }
 
     public static void scrollToElement(WebElement webElement) {
-        JavascriptExecutor js = (JavascriptExecutor) getDriver();
+        JavascriptExecutor js = getJavascriptExecutor();
         js.executeScript("arguments[0].scrollIntoView(true);", webElement);
     }
 

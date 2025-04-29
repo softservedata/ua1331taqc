@@ -1,5 +1,7 @@
 package com.softserve.edu07fwk.pages;
 
+import com.softserve.edu07fwk.api.GuestActions;
+import com.softserve.edu07fwk.api.SigninResponse;
 import com.softserve.edu07fwk.data.User;
 import com.softserve.edu07fwk.tools.WebDriverWrapper;
 import org.openqa.selenium.By;
@@ -19,6 +21,7 @@ public final class SigninPage {
     private final String REMOVE_ATTRIBUTE = "document.querySelector('%s').removeAttribute('disabled')";
 
     private static final Logger logger = LoggerFactory.getLogger(SigninPage.class);
+    protected GuestActions guestActions;
     protected WebDriver driver;
     //
     private WebElement emailField;
@@ -27,6 +30,7 @@ public final class SigninPage {
 
     public SigninPage(WebDriver driver) {
         this.driver = driver;
+        guestActions = new GuestActions();
         closePopup();
         initElements();
     }
@@ -133,6 +137,10 @@ public final class SigninPage {
         WebDriverWrapper.restoreImplicitlyWait();
     }
 
+    private void updateLocalStorage(SigninResponse signinResponse) {
+
+    }
+
     // PageObject Business Operation
 
     //public HomeGreencityPage login(String email, String password) {
@@ -153,5 +161,20 @@ public final class SigninPage {
         clickSigninButton();
         return new SigninPage(driver);
         //return new HomeGreencityPage(driver);
+    }
+
+    public HomeGreencityPage signin(User user) {
+        logger.debug("start signin(), user = " + user);
+        //
+        typeEmail(user.getEmail());
+        typePassword(user.getPassword());
+        activateSigninButton();
+        //
+        //clickSigninButton();
+        SigninResponse signinResponse = guestActions.signin(user);
+        updateLocalStorage(signinResponse);
+        // CloseSigninPage
+        // Refresh
+        return new HomeGreencityPage(driver);
     }
 }
