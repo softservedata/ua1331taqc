@@ -2,7 +2,6 @@ package homeworks.hwSeleniumWebDr;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.support.FindBy;
@@ -17,27 +16,27 @@ import java.time.Duration;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+
 public class TestSamples3 {
     @FindBy(css = ".lang-option")
     private WebElement languageSwitcher;
 
-    @FindBy(xpath = "//ul/ul/li[1]/span")
+    @FindBy(xpath = "//li[@aria-label='En']")
     private WebElement enOption;
 
-    @FindBy(xpath = "//ul/ul/li[2]/span")
+    @FindBy(xpath = "//li[@aria-label='Ua']")
     private WebElement uaOption;
 
     @FindBy(css = ".header_sign-in-link")
     private WebElement signInButton;
 
-    @FindBy(css = "app-sign-in.ng-star-inserted > h1:nth-child(1)")
+    @FindBy(xpath = "//app-sign-in//h1")
     private WebElement welcomeText;
 
-    @FindBy(css = "app-sign-in.ng-star-inserted > h2:nth-child(2)")
+    @FindBy(xpath = "//app-sign-in//h2")
     private WebElement signInDetailsText;
 
-    @FindBy(css = "label:nth-child(1)")
+    @FindBy(xpath = "//label[@for='email']")
     private WebElement emailLabel;
 
     @FindBy(id = "email")
@@ -49,19 +48,16 @@ public class TestSamples3 {
     @FindBy(css = ".greenStyle")
     private WebElement signInSubmitButton;
 
-//    @FindBy(css="----------")
-//    private WebElement result;
-
     @FindBy(css = ".alert-general-error")
     private WebElement errorMessage;
 
-    @FindBy(css = "#pass-err-msg > app-error:nth-child(1)")
+    @FindBy(css = "#pass-err-msg")
     private WebElement errorPassword;
 
     @FindBy(css = ".alert-general-error")
     private WebElement generalError;
 
-    @FindBy(css = "#email-err-msg > app-error:nth-child(1)")
+    @FindBy(css = "#email-err-msg")
     private WebElement errorEmail;
 
     @FindBy(css = ".name")
@@ -72,10 +68,6 @@ public class TestSamples3 {
 
     @FindBy(css = "li.drop-down-item:nth-child(3)")
     private WebElement logOut;
-
-
-//    @FindBy(css = ".description__title")
-//    private WebElement hello;
 
 
     private static WebDriver driver;
@@ -104,14 +96,13 @@ public class TestSamples3 {
     }
 
 
-    public void switchLanguage(String lang) {
-        languageSwitcher.click();
-        WebElement option = (lang.equals("en")) ? enOption : uaOption;
-        wait.until(ExpectedConditions.elementToBeClickable(option)).click();
+    public void switchLanguage() {
+        wait.until(ExpectedConditions.elementToBeClickable(languageSwitcher)).click();
+        wait.until(ExpectedConditions.elementToBeClickable(enOption)).click();
     }
 
 
-    @Order(1)
+
     @Test
     public void verifyTitle() {
         Assertions.assertEquals("GreenCity", driver.getTitle());
@@ -119,14 +110,14 @@ public class TestSamples3 {
     }
 
 
-    @Order(6)
+
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "en; samplestest@greencity.com; weyt3$Guew^; Welcome back!; Please enter your details to sign in.; Email",
-            "ua; samplestest@greencity.com; weyt3$Guew^; З поверненням!; Будь ласка, внесiть свої дані для входу.; Електронна пошта"
+            "samplestest@greencity.com; weyt3$Guew^; Welcome back!; Please enter your details to sign in.; Email",
+
     })
-    public void signIn(String lang, String email, String password, String expectedWelcome, String expectedDetails, String expectedEmailLabel) {
-        switchLanguage(lang);
+    public void signInEn(String email, String password, String expectedWelcome, String expectedDetails, String expectedEmailLabel) {
+        switchLanguage();
         signInButton.click();
         assertThat(welcomeText.getText(), is(expectedWelcome));
         assertThat(signInDetailsText.getText(), is(expectedDetails));
@@ -141,14 +132,31 @@ public class TestSamples3 {
     }
 
 
-    @Order(2)
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "en; samplestesgreencity.com; Please check that your e-mail address is indicated correctly",
-            "ua; samplestesgreencity.com; Перевірте, чи правильно вказано вашу адресу електронної пошти"
+            "samplestest@greencity.com; weyt3$Guew^; З поверненням!; Будь ласка, внесiть свої дані для входу.; Електронна пошта"
     })
-    public void signInNotValid(String lang, String email, String message) {
-        switchLanguage(lang);
+    public void signInUa(String email, String password, String expectedWelcome, String expectedDetails, String expectedEmailLabel) {
+        signInButton.click();
+        assertThat(welcomeText.getText(), is(expectedWelcome));
+        assertThat(signInDetailsText.getText(), is(expectedDetails));
+        assertThat(emailLabel.getText(), is(expectedEmailLabel));
+        emailInput.sendKeys(email);
+        passwordInput.sendKeys(password);
+        signInSubmitButton.click();
+        wait.until(ExpectedConditions.visibilityOf(name));
+        Assertions.assertEquals("Svitlana", name.getText());
+        userName.click();
+        logOut.click();
+    }
+
+
+    @ParameterizedTest
+    @CsvSource(delimiter = ';', value = {
+            "samplestesgreencity.com; Please check that your e-mail address is indicated correctly"
+    })
+    public void signInNotValidEn(String email, String message) {
+        switchLanguage();
         signInButton.click();
         emailInput.sendKeys(email);
         passwordInput.sendKeys("somepassword");
@@ -156,14 +164,26 @@ public class TestSamples3 {
         Assertions.assertEquals(message, errorEmail.getText());
     }
 
-    @Order(3)
+
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "en; samplestest@greencity.com; wrongpass123!; Bad email or password",
-            "ua; samplestest@greencity.com; wrongpass123!; Введено невірний email або пароль"
+            "samplestesgreencity.com; Перевірте, чи правильно вказано вашу адресу електронної пошти"
     })
-    public void signInWithInvalidPassword(String lang, String email, String password, String expectedError) {
-        switchLanguage(lang);
+    public void signInNotValidUa(String email, String message) {
+        signInButton.click();
+        emailInput.sendKeys(email);
+        passwordInput.sendKeys("somepassword");
+        signInSubmitButton.click();
+        Assertions.assertEquals(message, errorEmail.getText());
+    }
+
+
+    @ParameterizedTest
+    @CsvSource(delimiter = ';', value = {
+            "samplestest@greencity.com; wrongpass123!; Bad email or password",
+    })
+    public void signInWithInvalidPasswordEn(String email, String password, String expectedError) {
+        switchLanguage();
         signInButton.click();
         emailInput.sendKeys(email);
         passwordInput.sendKeys(password);
@@ -172,14 +192,28 @@ public class TestSamples3 {
         Assertions.assertEquals(expectedError, generalError.getText());
     }
 
-    @Order(4)
+
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "en; ''; somepassword; Email is required",
-            "ua; ''; somepassword; Введіть пошту"
+            "samplestest@greencity.com; wrongpass123!; Введено невірний email або пароль"
     })
-    public void signInWithEmptyEmail(String lang, String email, String password, String expectedError) {
-        switchLanguage(lang);
+    public void signInWithInvalidPasswordUa(String email, String password, String expectedError) {
+        signInButton.click();
+        emailInput.sendKeys(email);
+        passwordInput.sendKeys(password);
+        signInSubmitButton.click();
+        wait.until(ExpectedConditions.visibilityOf(generalError));
+        Assertions.assertEquals(expectedError, generalError.getText());
+    }
+
+
+    @ParameterizedTest
+    @CsvSource(delimiter = ';', value = {
+            "''; somepassword; Email is required",
+
+    })
+    public void signInWithEmptyEmailEn(String email, String password, String expectedError) {
+        switchLanguage();
         signInButton.click();
         emailInput.sendKeys(email);
         passwordInput.sendKeys(password);
@@ -188,20 +222,53 @@ public class TestSamples3 {
         Assertions.assertEquals(expectedError, errorEmail.getText());
     }
 
-    @Order(5)
+
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "en; samplestest@greencity.com; ''; Password is required",
-            "ua; samplestest@greencity.com; ''; Введіть пароль"
+            "''; somepassword; Введіть пошту"
     })
-    public void signInWithEmptyPassword(String lang, String email, String password, String expectedError) {
-        switchLanguage(lang);
+    public void signInWithEmptyEmailUa(String email, String password, String expectedError) {
+        signInButton.click();
+        emailInput.sendKeys(email);
+        passwordInput.sendKeys(password);
+        signInSubmitButton.click();
+        wait.until(ExpectedConditions.visibilityOf(errorEmail));
+        Assertions.assertEquals(expectedError, errorEmail.getText());
+    }
+
+
+    @ParameterizedTest
+    @CsvSource(delimiter = ';', value = {
+            "samplestest@greencity.com; ''; Password is required",
+
+    })
+    public void signInWithEmptyPasswordEn(String email, String password, String expectedError) {
+        switchLanguage();
         signInButton.click();
         emailInput.sendKeys(email);
         passwordInput.sendKeys(password);
         signInSubmitButton.click();
         wait.until(ExpectedConditions.visibilityOf(errorPassword));
         Assertions.assertEquals(expectedError, errorPassword.getText());
+    }
+
+
+    @ParameterizedTest
+    @CsvSource(delimiter = ';', value = {
+            "samplestest@greencity.com; ''; Введіть пароль"
+    })
+    public void signInWithEmptyPasswordUa(String email, String password, String expectedError) {
+        signInButton.click();
+        emailInput.sendKeys(email);
+        passwordInput.sendKeys(password);
+        signInSubmitButton.click();
+        wait.until(ExpectedConditions.visibilityOf(errorPassword));
+        Assertions.assertEquals(expectedError, errorPassword.getText());
+    }
+
+    @AfterEach
+    public void refreshPage() {
+        driver.navigate().refresh();
     }
 
     @AfterAll

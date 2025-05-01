@@ -17,35 +17,33 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+
 public class ParametrizedTests {
 
     private static WebDriver driver;
     private WebDriverWait wait;
 
 
+
     @FindBy(css = ".lang-option")
     private WebElement languageSwitcher;
 
-    @FindBy(xpath = "//html/body/app-root/app-main/div/app-header/header/div[2]/div/div/div/ul/ul/li[2]")
+    @FindBy(xpath = "//li[@aria-label='En']")
     private WebElement enOption;
 
-    @FindBy(xpath = "/html/body/app-root/app-main/div/app-header/header/div[2]/div/div/div/ul/ul/li[2]/span")
+    @FindBy(xpath = "//li[@aria-label='Ua']")
     private WebElement uaOption;
-
-    @FindBy(css = ".add-shadow > li:nth-child(2) > span:nth-child(1)")
-    private WebElement anotherLang;
 
     @FindBy(css = ".header_sign-in-link")
     private WebElement signInButton;
 
-    @FindBy(css = "app-sign-in.ng-star-inserted > h1:nth-child(1)")
+    @FindBy(xpath = "//app-sign-in//h1")
     private WebElement welcomeText;
 
-    @FindBy(css = "app-sign-in.ng-star-inserted > h2:nth-child(2)")
+    @FindBy(xpath = "//app-sign-in//h2")
     private WebElement signInDetailsText;
 
-    @FindBy(css = "label:nth-child(1)")
+    @FindBy(xpath = "//label[@for='email']")
     private WebElement emailLabel;
 
     @FindBy(id = "email")
@@ -60,10 +58,13 @@ public class ParametrizedTests {
     @FindBy(css = ".alert-general-error")
     private WebElement errorMessage;
 
-    @FindBy(css = "#pass-err-msg > app-error:nth-child(1) > div:nth-child(1)")
+    @FindBy(css = "#pass-err-msg")
     private WebElement errorPassword;
 
-    @FindBy(css = "#email-err-msg > app-error:nth-child(1) > div:nth-child(1)")
+    @FindBy(css = ".alert-general-error")
+    private WebElement generalError;
+
+    @FindBy(css = "#email-err-msg")
     private WebElement errorEmail;
 
     @FindBy(css = ".name")
@@ -74,6 +75,7 @@ public class ParametrizedTests {
 
     @FindBy(css = "li.drop-down-item:nth-child(3)")
     private WebElement logOut;
+
 
 
 
@@ -99,26 +101,19 @@ public class ParametrizedTests {
     }
 
 
-    public void switchLanguage(String lang) {
+    public void switchLanguage() {
         wait.until(ExpectedConditions.elementToBeClickable(languageSwitcher)).click();
-        WebElement option = (lang.equals("en")) ? enOption : uaOption;
-        wait.until(ExpectedConditions.elementToBeClickable(option)).click();
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        wait.until(ExpectedConditions.elementToBeClickable(enOption)).click();
     }
 
 
-    @Order(1)
+
     @Test
     public void verifyTitle() {
         Assertions.assertEquals("GreenCity", driver.getTitle());
     }
 
-    @Order(2)
+
     @ParameterizedTest
     @CsvSource(delimiter = '|', value = {
             "samplestest@greencity.com| weyt3$Guew^| З поверненням!| Будь ласка, внесiть свої дані для входу.| Електронна пошта| Svitlana",
@@ -148,7 +143,7 @@ public class ParametrizedTests {
         logOut.click();
     }
 
-    @Order(3)
+
     @ParameterizedTest
     @CsvSource(delimiter = '|', value = {
             "samplestest@greencity.com| weyt3$Guew^| Welcome back!| Please enter your details to sign in.| Email| Svitlana",
@@ -158,7 +153,7 @@ public class ParametrizedTests {
     })
 
     public void signInEng(String email, String password, String expectedWelcome, String expectedDetails, String expectedEmailLabel, String expectedName) throws InterruptedException {
-        switchLanguage("en");
+        switchLanguage();
 
         signInButton.click();
         wait.until(ExpectedConditions.visibilityOf(welcomeText));
@@ -182,34 +177,17 @@ public class ParametrizedTests {
     }
 
 
-    @Order(4)
+
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "ua; testuser2025greencity.com; Перевірте, чи правильно вказано вашу адресу електронної пошти",
-            "ua; samplestesgreencity.com; Перевірте, чи правильно вказано вашу адресу електронної пошти",
-            "ua; newuser1greencity.com; Перевірте, чи правильно вказано вашу адресу електронної пошти",
-            "ua; greenfan3greencity.com; Перевірте, чи правильно вказано вашу адресу електронної пошти"
+            "testuser2025greencity.com; Перевірте, чи правильно вказано вашу адресу електронної пошти",
+            "samplestesgreencity.com; Перевірте, чи правильно вказано вашу адресу електронної пошти",
+            "newuser1greencity.com; Перевірте, чи правильно вказано вашу адресу електронної пошти",
+            "greenfan3greencity.com; Перевірте, чи правильно вказано вашу адресу електронної пошти"
 
     })
-    public void signInNotValidUa(String lang, String email, String message) {
-//    switchLanguage("ua");
-        signInButton.click();
-        emailInput.sendKeys(email);
-        passwordInput.sendKeys("somepassword");
-        signInSubmitButton.click();
-        Assertions.assertEquals(message, errorEmail.getText());
-    }
-    @Order(5)
-    @ParameterizedTest
-    @CsvSource(delimiter = ';', value = {
-            "en; testuser2025greencity.com; Please check that your e-mail address is indicated correctly",
-            "en; samplestesgreencity.com; Please check that your e-mail address is indicated correctly",
-            "en; newuser1greencity.com; Please check that your e-mail address is indicated correctly",
-            "en; greenfan3greencity.com; Please check that your e-mail address is indicated correctly"
+    public void signInNotValidUa(String email, String message) {
 
-    })
-    public void signInNotValidEn(String lang, String email, String message) {
-        switchLanguage("en");
         signInButton.click();
         emailInput.sendKeys(email);
         passwordInput.sendKeys("somepassword");
@@ -217,37 +195,36 @@ public class ParametrizedTests {
         Assertions.assertEquals(message, errorEmail.getText());
     }
 
-
-    @Order(6)
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "ua; samplestest@greencity.com; wrongpass123!; Введено невірний email або пароль",
-            "ua; testuser2025@greencity.com; wrongpass123!; Введено невірний email або пароль",
-            "ua; newuser1@greencity.com; wrongpass123!; Введено невірний email або пароль",
-            "ua; greenfan3@greencity.com; wrongpass123!; Введено невірний email або пароль",
-
+            "testuser2025greencity.com; Please check that your e-mail address is indicated correctly",
+            "samplestesgreencity.com; Please check that your e-mail address is indicated correctly",
+            "newuser1greencity.com; Please check that your e-mail address is indicated correctly",
+            "greenfan3greencity.com; Please check that your e-mail address is indicated correctly"
 
     })
-    public void signInWithInvalidPasswordUa(String lang, String email, String password, String expectedError) {
-//        switchLanguage("ua");
+    public void signInNotValidEn(String email, String message) {
+        switchLanguage();
         signInButton.click();
         emailInput.sendKeys(email);
-        passwordInput.sendKeys(password);
+        passwordInput.sendKeys("somepassword");
         signInSubmitButton.click();
-        wait.until(ExpectedConditions.visibilityOf(errorMessage));
-        Assertions.assertEquals(expectedError, errorMessage.getText());
+        Assertions.assertEquals(message, errorEmail.getText());
     }
-    @Order(7)
+
+
+
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "en; samplestest@greencity.com; wrongpass123!; Bad email or password",
-            "en; testuser2025@greencity.com; wrongpass123!; Bad email or password",
-            "en; newuser1@greencity.com; wrongpass123!; Bad email or password",
-            "en; greenfan3@greencity.com; wrongpass123!; Bad email or password",
+            "samplestest@greencity.com; wrongpass123!; Введено невірний email або пароль",
+            "testuser2025@greencity.com; wrongpass123!; Введено невірний email або пароль",
+            "newuser1@greencity.com; wrongpass123!; Введено невірний email або пароль",
+            "greenfan3@greencity.com; wrongpass123!; Введено невірний email або пароль",
+
 
     })
-    public void signInWithInvalidPasswordEn(String lang, String email, String password, String expectedError) {
-        switchLanguage("en");
+    public void signInWithInvalidPasswordUa(String email, String password, String expectedError) {
+
         signInButton.click();
         emailInput.sendKeys(email);
         passwordInput.sendKeys(password);
@@ -256,18 +233,36 @@ public class ParametrizedTests {
         Assertions.assertEquals(expectedError, errorMessage.getText());
     }
 
-    @Order(8)
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "ua; ' '; somepassword; Введіть пошту",
-            "ua; ' '; GreenFan3$; Введіть пошту",
-            "ua; ' '; weyt3$Guew^; Введіть пошту",
-            "ua; ' '; NewPass1!; Введіть пошту",
+            "samplestest@greencity.com; wrongpass123!; Bad email or password",
+            "testuser2025@greencity.com; wrongpass123!; Bad email or password",
+            "newuser1@greencity.com; wrongpass123!; Bad email or password",
+            "greenfan3@greencity.com; wrongpass123!; Bad email or password",
+
+    })
+    public void signInWithInvalidPasswordEn(String email, String password, String expectedError) {
+        switchLanguage();
+        signInButton.click();
+        emailInput.sendKeys(email);
+        passwordInput.sendKeys(password);
+        signInSubmitButton.click();
+        wait.until(ExpectedConditions.visibilityOf(errorMessage));
+        Assertions.assertEquals(expectedError, errorMessage.getText());
+    }
+
+
+    @ParameterizedTest
+    @CsvSource(delimiter = ';', value = {
+            "' '; somepassword; Введіть пошту",
+            "' '; GreenFan3$; Введіть пошту",
+            "' '; weyt3$Guew^; Введіть пошту",
+            "' '; NewPass1!; Введіть пошту",
 
 
     })
-    public void signInWithEmptyEmailUa(String lang, String email, String password, String expectedError) {
-//        switchLanguage("ua");
+    public void signInWithEmptyEmailUa(String email, String password, String expectedError) {
+
         signInButton.click();
         emailInput.sendKeys(email);
         passwordInput.sendKeys(password);
@@ -275,18 +270,18 @@ public class ParametrizedTests {
         wait.until(ExpectedConditions.visibilityOf(errorEmail));
         Assertions.assertEquals(expectedError, errorEmail.getText());
     }
-    @Order(9)
+
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "en; ' '; somepassword; Email is required",
-            "en; ' '; GreenFan3$; Email is required",
-            "en; ' '; weyt3$Guew^; Email is required",
-            "en; ' '; NewPass1!; Email is required",
+            "' '; somepassword; Email is required",
+            "' '; GreenFan3$; Email is required",
+            "' '; weyt3$Guew^; Email is required",
+            "' '; NewPass1!; Email is required",
 
 
     })
-    public void signInWithEmptyEmailEn(String lang, String email, String password, String expectedError) {
-        switchLanguage("en");
+    public void signInWithEmptyEmailEn(String email, String password, String expectedError) {
+        switchLanguage();
         signInButton.click();
         emailInput.sendKeys(email);
         passwordInput.sendKeys(password);
@@ -295,17 +290,17 @@ public class ParametrizedTests {
         Assertions.assertEquals(expectedError, errorEmail.getText());
     }
 
-    @Order(10)
+
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "ua; samplestest@greencity.com; ''; Введіть пароль",
-            "ua; greenfan3@greencity.com; ''; Введіть пароль",
-            "ua; newuser1@greencity.com; ''; Введіть пароль",
-            "ua; testuser2025@greencity.com; ''; Введіть пароль",
+            "samplestest@greencity.com; ''; Введіть пароль",
+            "greenfan3@greencity.com; ''; Введіть пароль",
+            "newuser1@greencity.com; ''; Введіть пароль",
+            "testuser2025@greencity.com; ''; Введіть пароль",
 
     })
-    public void signInWithEmptyPasswordUa(String lang, String email, String password, String expectedError) {
-//        switchLanguage("ua");
+    public void signInWithEmptyPasswordUa(String email, String password, String expectedError) {
+
         signInButton.click();
         emailInput.sendKeys(email);
         passwordInput.sendKeys(password);
@@ -313,17 +308,17 @@ public class ParametrizedTests {
         wait.until(ExpectedConditions.visibilityOf(errorPassword));
         Assertions.assertEquals(expectedError, errorPassword.getText());
     }
-    @Order(11)
+
     @ParameterizedTest
     @CsvSource(delimiter = ';', value = {
-            "en; samplestest@greencity.com; ''; Password is required",
-            "en; greenfan3@greencity.com; ''; Password is required",
-            "en; newuser1@greencity.com; ''; Password is required",
-            "en; testuser2025@greencity.com; ''; Password is required",
+            "samplestest@greencity.com; ''; Password is required",
+            "greenfan3@greencity.com; ''; Password is required",
+            "newuser1@greencity.com; ''; Password is required",
+            "testuser2025@greencity.com; ''; Password is required",
 
     })
-    public void signInWithEmptyPasswordEn(String lang, String email, String password, String expectedError) {
-        switchLanguage("en");
+    public void signInWithEmptyPasswordEn(String email, String password, String expectedError) {
+        switchLanguage();
         signInButton.click();
         emailInput.sendKeys(email);
         passwordInput.sendKeys(password);
