@@ -2,6 +2,7 @@ package com.softserve.edu07fwk.tests;
 
 import com.softserve.edu07fwk.data.User;
 import com.softserve.edu07fwk.pages.AboutusPage;
+import com.softserve.edu07fwk.pages.HomeGreencityPage;
 import com.softserve.edu07fwk.pages.SigninPage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,8 +27,8 @@ public class GreencityTest extends TestRunner {
     //@CsvSource({"cicada32073@mailshan.com, Qwerty_1"})
     //public void checkSigninPages(String email, String password) {
     @MethodSource("com.softserve.edu07fwk.tests.TestParameters#provideUsers")
-    public void checkSigninPages(User user) {
-        logger.info("Start checkSigninPages( " + user + " )");
+    public void checkLogin(User user) {
+        logger.info("Start checkLogin( " + user + " )");
         SigninPage signinPage = loadApplication()
                 .gotoHomeGreencityPage()
                 .chooseEnglish()
@@ -40,4 +41,29 @@ public class GreencityTest extends TestRunner {
         //Assertions.assertEquals(password, signinPage.getPasswordFieldText());
         Assertions.assertEquals(user.getPassword(), signinPage.getPasswordFieldText());
     }
+
+    @ParameterizedTest
+
+    @MethodSource("com.softserve.edu07fwk.tests.TestParameters#provideUsers")
+    public void checkSignin(User user) {
+        logger.info("Start checkSignin( " + user + " )");
+        presentationSleep(); // For Presentation ONLY
+        //
+        HomeGreencityPage homeGreencityPage = loadApplication()
+                .gotoHomeGreencityPage()
+                .chooseEnglish()
+                .gotoSigninPage()
+                .signin(user);
+        presentationSleep(); // For Presentation ONLY
+        //
+        Assertions.assertEquals(HomeGreencityPage.HOME_HEADER, homeGreencityPage.getHomeHeaderText());
+        Assertions.assertEquals(user.getUsername(), homeGreencityPage.getUserNameText());
+        presentationSleep(); // For Presentation ONLY
+        //
+        homeGreencityPage = homeGreencityPage.gotoSignOut();
+        presentationSleep(); // For Presentation ONLY
+        //
+        Assertions.assertNotNull(homeGreencityPage.getSignin());
+    }
+
 }

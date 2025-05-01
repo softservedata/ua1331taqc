@@ -27,6 +27,7 @@ public final class SigninPage {
     private WebElement emailField;
     private WebElement passwordField;
     private WebElement signinButton;
+    private WebElement closeFormButton;
 
     public SigninPage(WebDriver driver) {
         this.driver = driver;
@@ -39,6 +40,7 @@ public final class SigninPage {
         emailField = driver.findElement(By.id("email"));
         passwordField = driver.findElement(By.id("password"));
         signinButton = driver.findElement(By.cssSelector("button[type='submit']"));
+        closeFormButton = driver.findElement(By.cssSelector("a.close-modal-window"));
     }
 
     // PageObject Atomic Operation
@@ -99,6 +101,15 @@ public final class SigninPage {
         getSigninButton().click();
     }
 
+    // closeFormButton
+    public WebElement getCloseFormButton() {
+        return closeFormButton; // Classic Page Object
+    }
+
+    public void clickCloseFormButton() {
+        getCloseFormButton().click();
+    }
+
     // PageObject Functional Operation
 
     private void typeEmail(String email) {
@@ -138,7 +149,12 @@ public final class SigninPage {
     }
 
     private void updateLocalStorage(SigninResponse signinResponse) {
-
+        WebDriverWrapper.setItemLocalStorage("accessToken", signinResponse.getAccessToken());
+        //WebDriverWrapper.setItemLocalStorage("canUserEdit", "true");
+        WebDriverWrapper.setItemLocalStorage("language", "en");
+        WebDriverWrapper.setItemLocalStorage("name", signinResponse.getName());
+        WebDriverWrapper.setItemLocalStorage("refreshToken", signinResponse.getRefreshToken());
+        WebDriverWrapper.setItemLocalStorage("userId", signinResponse.getUserId());
     }
 
     // PageObject Business Operation
@@ -174,7 +190,10 @@ public final class SigninPage {
         SigninResponse signinResponse = guestActions.signin(user);
         updateLocalStorage(signinResponse);
         // CloseSigninPage
+        clickCloseFormButton();
         // Refresh
+        WebDriverWrapper.refreshPage();
+        //
         return new HomeGreencityPage(driver);
     }
 }

@@ -12,7 +12,7 @@ public final class UserRepository {
     public static User getValid() {
         //return new User("cicada32073@mailshan.com","Qwerty_1", "Qwerty1");
         return new User()
-                .setEmail("cicada32073@mailshan.com")
+                .setEmail("lsd09559@kisoq.com")
                 .setPassword("Qwerty_1")
                 //.setPassword(System.getenv("USER_PASSWORD"))
                 .setUsername("Qwerty1");

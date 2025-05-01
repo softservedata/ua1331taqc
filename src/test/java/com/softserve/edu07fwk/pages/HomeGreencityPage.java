@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class HomeGreencityPage extends MenuPart {
+    public static final String HOME_HEADER = "A new way to cultivate useful habits";
 
     private WebElement homeHeader;
 
@@ -50,4 +51,5 @@ public class HomeGreencityPage extends MenuPart {
         clickUkrainian();
         return new HomeGreencityPage(driver);
     }
+
 }

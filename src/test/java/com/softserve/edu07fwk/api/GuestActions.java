@@ -36,6 +36,7 @@ public class GuestActions {
         try {
             response = client.newCall(request).execute();
             resultJson = response.body().string();
+            System.out.println("resultJson = " + resultJson);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

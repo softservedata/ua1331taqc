@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public abstract class MenuPart extends HeaderPart {
+    private final String SIGN_OUT_XPATH = "//ul[@class='dropdown-list drop-down-item']//a[contains(text(), 'Sign out')]";
 
     private WebElement greencityLogo;
     private WebElement ecoNews;
@@ -12,6 +13,7 @@ public abstract class MenuPart extends HeaderPart {
     private WebElement aboutus;
     private WebElement ubsCourier;
     //
+    private WebElement userName;
     private WebElement signin;
 
     public MenuPart(WebDriver driver) {
@@ -95,6 +97,20 @@ public abstract class MenuPart extends HeaderPart {
         getUbsCourier().click();
     }
 
+    // userName
+    public WebElement getUserName() {
+        userName = driver.findElement(By.cssSelector("li.user-name"));
+        return userName;
+    }
+
+    public String getUserNameText() {
+        return getUserName().getText().trim();
+    }
+
+    public void clickUserName() {
+        getUserName().click();
+    }
+
     // signin
     public WebElement getSignin() {
         signin = driver.findElement(By.cssSelector("div.header_navigation-menu img[src*='/user.svg']"));
@@ -103,6 +119,19 @@ public abstract class MenuPart extends HeaderPart {
 
     public void clickSignin() {
         getSignin().click();
+    }
+
+    // signOut
+    private WebElement getSignOut() {
+        return driver.findElement(By.xpath(SIGN_OUT_XPATH));
+    }
+
+    private String getSignOutText() {
+        return getSignOut().getText().trim();
+    }
+
+    private void clickSignOut() {
+        getSignOut().click();
     }
 
     // PageObject Functional Operation
@@ -124,5 +153,13 @@ public abstract class MenuPart extends HeaderPart {
         //
         clickSignin();
         return new SigninPage(driver);
+    }
+
+    // signOut
+    public HomeGreencityPage gotoSignOut() {
+        clickGreencityLogo();
+        clickUserName();
+        clickSignOut();
+        return new HomeGreencityPage(driver);
     }
 }
