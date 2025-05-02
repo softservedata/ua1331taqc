@@ -1,9 +1,10 @@
-package com.softserve.homeworks.task11;
+package com.softserve.homeworks.task12;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -19,8 +20,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestSamples3 {
-    @FindBy(css = "a.header_user-name")
-    private WebElement loggedUserIcon;
+//    @FindBy(css = "a.header_user-name")
+//    private WebElement loggedUserIcon;
+    private WebElement waitForLoggedUserIcon() {
+        return wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.header_user-name")));
+    }
 
     @FindBy(css = "li.lang-option > img")
     private WebElement langOption;
@@ -31,11 +35,18 @@ public class TestSamples3 {
     @FindBy(xpath = "//ul[@role='menu']/li/span[contains(text(), 'Ua')]")
     private WebElement uaLangOption;
 
-    @FindBy(css = "ul.header_navigation-menu-right-list > a.header_sign-in-link")
-    private WebElement signInButton;
+//    @FindBy(css = "ul.header_navigation-menu-right-list > a.header_sign-in-link")
+//    private WebElement signInButton;
+    private WebElement waitForSignInButton() {
+        return wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("ul.header_navigation-menu-right-list > a.header_sign-in-link")));
+    }
 
-    @FindBy(css = "app-sign-in > h1")
-    private WebElement welcomeText;
+//    @FindBy(css = "app-sign-in > h1")
+//    private WebElement welcomeText;
+    private WebElement waitForWelcomeText() {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("app-sign-in > h1")));
+    }
+
 
     @FindBy(css = "app-sign-in > h2")
     private WebElement signInDetailsText;
@@ -43,17 +54,26 @@ public class TestSamples3 {
     @FindBy(css = "form > label[for='email']")
     private WebElement emailLabel;
 
-    @FindBy(id = "email")
-    private WebElement emailInput;
+//    @FindBy(id = "email")
+//    private WebElement emailInput;
+    private WebElement waitForEmailInput() {
+        return wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#email")));
+    }
 
     @FindBy(css = "form > label[for='password']")
     private WebElement passwordLabel;
 
-    @FindBy(id = "password")
-    private WebElement passwordInput;
+//    @FindBy(id = "password")
+//    private WebElement passwordInput;
+    private WebElement waitForPasswordInput() {
+        return wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#password")));
+    }
 
-    @FindBy(css = "button[type='submit']")
-    private WebElement signInSubmitButton;
+//    @FindBy(css = "button[type='submit']")
+//    private WebElement signInSubmitButton;
+    private WebElement waitForSignInSubmitButton() {
+        return wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type='submit']")));
+    }
 
     @FindBy(css = ".alert-general-error")
     private WebElement generalErrorMessage;
@@ -67,10 +87,14 @@ public class TestSamples3 {
     private static WebDriver driver;
     private WebDriverWait wait;
 
+    private void jsClick(WebElement element){
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+    }
+
     private void switchToEng() {
-        langOption.click();
+        jsClick(langOption);
         wait.until(ExpectedConditions.elementToBeClickable(enLangOption));
-        enLangOption.click();
+        jsClick(enLangOption);
     }
 
     @BeforeAll
@@ -103,24 +127,22 @@ public class TestSamples3 {
     })
     public void signInValid(String expectedEmail, String expectedPassword, String expectedWelcomeText,
                        String expectedSignInDetailsText, String expectedEmailLabel, String expectedPasswordLabel) {
-        signInButton.click();
-        wait.until(ExpectedConditions.visibilityOf(welcomeText));
+        jsClick(waitForSignInButton());
 
-        assertThat(welcomeText.getText(), is(expectedWelcomeText));
+        assertThat(waitForWelcomeText().getText(), is(expectedWelcomeText));
         assertThat(signInDetailsText.getText(), is(expectedSignInDetailsText));
 
         assertThat(emailLabel.getText(), is(expectedEmailLabel));
-        emailInput.sendKeys(expectedEmail);
-        assertThat(emailInput.getAttribute("value"), is(expectedEmail));
+        waitForEmailInput().sendKeys(expectedEmail);
+        assertThat(waitForEmailInput().getAttribute("value"), is(expectedEmail));
 
         assertThat(passwordLabel.getText(), is(expectedPasswordLabel));
-        passwordInput.sendKeys(expectedPassword);
-        assertThat(passwordInput.getAttribute("value"), is(expectedPassword));
+        waitForPasswordInput().sendKeys(expectedPassword);
+        assertThat(waitForPasswordInput().getAttribute("value"), is(expectedPassword));
 
-        signInSubmitButton.click();
-        
-        wait.until(ExpectedConditions.visibilityOf(loggedUserIcon));
-        assertThat(loggedUserIcon.isDisplayed(), is(true));
+        jsClick(waitForSignInSubmitButton());
+
+        assertThat(waitForLoggedUserIcon().isDisplayed(), is(true));
     }
 
     @ParameterizedTest
@@ -132,11 +154,11 @@ public class TestSamples3 {
             "rnduser@gmail.com, RndpassQQ12@, Bad email or password"
     })
     public void signInWrongCredentials(String expectedEmail, String expectedPassword, String expectedGeneralError) {
-        signInButton.click();
+        jsClick(waitForSignInButton());
 
-        emailInput.sendKeys(expectedEmail);
-        passwordInput.sendKeys(expectedPassword);
-        signInSubmitButton.click();
+        waitForEmailInput().sendKeys(expectedEmail);
+        waitForPasswordInput().sendKeys(expectedPassword);
+        jsClick(waitForSignInSubmitButton());
 
         wait.until(ExpectedConditions.visibilityOf(generalErrorMessage));
         assertThat(generalErrorMessage.getText(), is(expectedGeneralError));
@@ -147,11 +169,11 @@ public class TestSamples3 {
             "'', '', Please fill all red fields"
     })
     public void signInEmptyCredentials(String expectedEmail, String expectedPassword, String expectedGeneralError) {
-        signInButton.click();
+        jsClick(waitForSignInButton());
 
-        emailInput.sendKeys(expectedEmail);
-        passwordInput.sendKeys(expectedPassword);
-        signInSubmitButton.click();
+        waitForEmailInput().sendKeys(expectedEmail);
+        waitForPasswordInput().sendKeys(expectedPassword);
+        emailLabel.click(); // for errors to be visible
 
         wait.until(ExpectedConditions.visibilityOf(generalErrorMessage));
         assertThat(generalErrorMessage.getText(), is(expectedGeneralError));
@@ -165,11 +187,11 @@ public class TestSamples3 {
             "userAndrii@.com, passwordD:9, Please check that your e-mail address is indicated correctly"
     })
     public void signInNotValidEmail(String expectedEmail, String expectedPassword, String expectedEmailError) {
-        signInButton.click();
+        jsClick(waitForSignInButton());
 
-        emailInput.sendKeys(expectedEmail);
-        passwordInput.sendKeys(expectedPassword);
-        signInSubmitButton.click();
+        waitForEmailInput().sendKeys(expectedEmail);
+        waitForPasswordInput().sendKeys(expectedPassword);
+        emailLabel.click(); // for errors to be visible
 
         wait.until(ExpectedConditions.visibilityOf(errorEmail));
         assertThat(errorEmail.getText(), is(expectedEmailError));
@@ -180,11 +202,11 @@ public class TestSamples3 {
             "'', weyt3$Guew^, Email is required"
     })
     public void signInEmptyEmail(String expectedEmail, String expectedPassword, String expectedEmailError) {
-        signInButton.click();
+        jsClick(waitForSignInButton());
 
-        emailInput.sendKeys(expectedEmail);
-        passwordInput.sendKeys(expectedPassword);
-        signInSubmitButton.click();
+        waitForEmailInput().sendKeys(expectedEmail);
+        waitForPasswordInput().sendKeys(expectedPassword);
+        emailLabel.click(); // for errors to be visible
 
         wait.until(ExpectedConditions.visibilityOf(errorEmail));
         assertThat(errorEmail.getText(), is(expectedEmailError));
@@ -198,11 +220,11 @@ public class TestSamples3 {
             "userOleh@gmail.com, qwerty1!Qqwerty1!Qqwerty1!, Password must be less than 20 characters long without spaces."
     })
     public void signInNotValidPassword(String expectedEmail, String expectedPassword, String expectedPasswordError) {
-        signInButton.click();
+        jsClick(waitForSignInButton());
 
-        emailInput.sendKeys(expectedEmail);
-        passwordInput.sendKeys(expectedPassword);
-        signInSubmitButton.click();
+        waitForEmailInput().sendKeys(expectedEmail);
+        waitForPasswordInput().sendKeys(expectedPassword);
+        emailLabel.click(); // for errors to be visible
 
         wait.until(ExpectedConditions.visibilityOf(errorPassword));
         assertThat(errorPassword.getText(), is(expectedPasswordError));
@@ -213,11 +235,11 @@ public class TestSamples3 {
             "samplestestgreencity.com, '', Password is required"
     })
     public void signInEmptyPassword(String expectedEmail, String expectedPassword, String expectedPasswordError) {
-        signInButton.click();
+        jsClick(waitForSignInButton());
 
-        emailInput.sendKeys(expectedEmail);
-        passwordInput.sendKeys(expectedPassword);
-        signInSubmitButton.click();
+        waitForEmailInput().sendKeys(expectedEmail);
+        waitForPasswordInput().sendKeys(expectedPassword);
+        emailLabel.click(); // for errors to be visible
 
         wait.until(ExpectedConditions.visibilityOf(errorPassword));
         assertThat(errorPassword.getText(), is(expectedPasswordError));
