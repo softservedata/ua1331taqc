@@ -17,7 +17,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class TestClassSample {
+public class EcoNewsTest{
     private static WebDriver driver;
     private WebDriverWait wait;
 
