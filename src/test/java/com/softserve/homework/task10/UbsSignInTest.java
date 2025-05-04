@@ -16,7 +16,7 @@ import java.time.Duration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
-public class TestSamples3 {
+public class UbsSignInTest {
 
     private static WebDriver driver;
     private WebDriverWait wait;
@@ -35,7 +35,7 @@ public class TestSamples3 {
     @FindBy(xpath = "//app-google-btn//button")
     private WebElement googleButton;
 
-    @FindBy(css = ".ng-star-inserted > h1")
+    @FindBy(css = "app-sign-in > h1")
     private WebElement welcomeText;
 
     @FindBy(xpath = "//app-sign-in//h2[contains(text(), 'Будь ласка, внесiть свої дані для входу.')]")
@@ -138,10 +138,6 @@ public class TestSamples3 {
         }
     }
 
-    public void waitForPasswordError() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.visibilityOf(errorPassword));
-    }
 
     @ParameterizedTest
     @DisplayName("verifyCross()")
@@ -154,12 +150,8 @@ public class TestSamples3 {
         clickSafely(crossButton);
     }
 
-    @ParameterizedTest
-    @DisplayName("verifyGoogleButton()")
-    @CsvSource({
-            "true, Google button is visible"
-    })
-    public void googleBtnCheck(boolean expectedVisible, String description){
+    @Test
+    public void googleBtnCheck(){
         clickSafely(signInButton);
         assertThat(googleButton.isDisplayed(), is(true));
         clickSafely(googleButton);
