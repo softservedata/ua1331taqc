@@ -22,12 +22,12 @@ public class SignInTest {
         driver.manage().window().setSize(new Dimension(1264, 798));
         driver.get("http://localhost:4205/#/greenCity");
         signInPage = new SignInPage(driver);
-        signInPage.switchToEnglish(); // Лише один раз
+        signInPage.switchToEnglish();
     }
 
     @BeforeEach
     public void initPage() {
-        signInPage.openSignInForm(); // Перед кожним тестом тільки форма
+        signInPage.openSignInForm();
     }
 
 
