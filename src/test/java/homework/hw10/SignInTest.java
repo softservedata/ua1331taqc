@@ -7,9 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.PageFactory;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SignInTest {
     private static WebDriver driver;
