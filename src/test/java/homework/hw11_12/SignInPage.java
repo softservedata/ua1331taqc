@@ -1,4 +1,4 @@
-package homework.hw11;
+package homework.hw11_12;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;

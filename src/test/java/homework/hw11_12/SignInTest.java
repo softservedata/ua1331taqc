@@ -1,4 +1,4 @@
-package homework.hw11;
+package homework.hw11_12;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
